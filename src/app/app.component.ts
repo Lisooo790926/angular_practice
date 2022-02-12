@@ -14,14 +14,16 @@ import { ServerService } from './service/server.service';
 })
 export class AppComponent implements OnInit {
   // all variable in component can be read by this component html!
-  
+
   appState$: Observable<AppState<CustomResponse>>;
   appState2$: Observable<Server[]>;
 
   // for showing data state
+  // this attributes can be used in component
   readonly DataState = DataState;
   readonly Status = Status;
 
+  // just for record status
   private filterSubject = new BehaviorSubject<string>('');
   private dataSubject = new BehaviorSubject<CustomResponse>(null);
   filterStatus$ = this.filterSubject.asObservable();
@@ -37,7 +39,7 @@ export class AppComponent implements OnInit {
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED_STATE, appData: response }
         }),
-        startWith({ dataState: DataState.LOADING_STATE}),
+        startWith({ dataState: DataState.LOADING_STATE }),
         catchError((error: string) => {
           return of({ dataState: DataState.ERROR_STATE, error })
         })
@@ -45,14 +47,14 @@ export class AppComponent implements OnInit {
 
     this.appState2$ = this.serverService.servers2$
       .pipe(
-      map(response=>response),
-      catchError((error: string) => {
-        return [];
-      })
-    );
+        map(response => response),
+        catchError((error: string) => {
+          return [];
+        })
+      );
   }
 
-  pingServer(ipAddress:string): void {
+  pingServer(ipAddress: string): void {
     this.filterSubject.next(ipAddress);
     this.appState$ = this.serverService.ping$(ipAddress)
       .pipe(
@@ -62,11 +64,26 @@ export class AppComponent implements OnInit {
           this.filterSubject.next('');
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
-        startWith({ dataState: DataState.LOADED_STATE,  appData: this.dataSubject.value }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.filterSubject.next('');
-          return of({ dataState: DataState.ERROR_STATE, error })
+          return of({ dataState: DataState.ERROR_STATE, error });
         })
       )
   }
+
+  filter(status: Status): void {
+    this.appState$ = this.serverService.filter$(status, this.dataSubject.value)
+      .pipe(
+        map(response => {
+          return { dataState: DataState.LOADED_STATE, appData: response }
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      )
+  }
+
+  
 }

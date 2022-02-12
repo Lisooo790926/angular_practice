@@ -5,9 +5,11 @@
         <div class="container-fluid">
             <a class="navbar-brand">Manager Server</a>
             <li class="nav-item d-flex">
-                <button class="m-1 btn btn-success" type="button">ALL</button>
-                <button class="m-1 btn btn-success" type="button">SERVER UP</button>
-                <button class="m-1 btn btn-primary" type="button">SERVER DOWN</button>
+                <button class="m-1 btn btn-success" type="button" data-bs-toggle="modal"
+                    data-bs-target="#createModal">CREATE</button>
+                <button class="m-1 btn btn-success" type="button" (click)="filter(Status.ALL)">ALL</button>
+                <button class="m-1 btn btn-success" type="button" (click)="filter(Status.SERVER_UP)">SERVER UP</button>
+                <button class="m-1 btn btn-primary" type="button" (click)="filter(Status.SERVER_DOWN)">SERVER DOWN</button>
             </li>
         </div>
     </nav>
@@ -43,16 +45,14 @@
                     <td>{{server.type}}</td>
                     <td>
                         <span class="badge"
-                        [ngClass]="server.status == Status.SERVER_UP ? ' badge-success' : ' badge-danger'">
+                            [ngClass]="server.status == Status.SERVER_UP ? ' badge-success' : ' badge-danger'">
                             {{server.status == Status.SERVER_UP ? 'SERVER UP' : 'SERVER DOWN'}}
                         </span>
                     </td>
                     <td>
                         <button *ngIf="(filterStatus$ | async) === '' || (filterStatus$ | async) !== server.ipAddress"
-                            (click) = "pingServer(server.ipAddress)" 
-                            type="button" class="btn btn-primary">Ping</button>
-                        <div *ngIf="(filterStatus$ | async) === server.ipAddress" 
-                            class="d-flex justify-content-center">
+                            (click)="pingServer(server.ipAddress)" type="button" class="btn btn-primary">Ping</button>
+                        <div *ngIf="(filterStatus$ | async) === server.ipAddress" class="d-flex justify-content-center">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden"></span>
                             </div>
@@ -70,4 +70,31 @@
             </div>
         </ng-container>
     </ng-container>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
 </div>
