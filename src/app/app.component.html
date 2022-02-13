@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <a class="navbar-brand">Manager Server</a>
             <li class="nav-item d-flex">
-                <button class="m-1 btn btn-success" type="button" data-bs-toggle="modal"
+                <button class="m-1 btn btn-success" type="button" (click)="open(createModal)" data-bs-toggle="modal"
                     data-bs-target="#createModal">CREATE</button>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.ALL)">ALL</button>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.SERVER_UP)">SERVER UP</button>
@@ -72,29 +72,39 @@
     </ng-container>
 </div>
 
-<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<ng-template #createModal let-modal>
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createModalLabel">New message</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Recipient:</label>
-                        <input type="text" class="form-control" id="recipient-name">
+            <form #serverForm="ngForm" (ngSubmit)="saveServer(serverForm)">
+                <div class="modal-header">
+                    <H4 class="modal-title"> Add Server</H4>
+                    <button type="button" class="close">Close</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>IP</label>
+                        <input type="text" ngModel name="ipAddress" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Message:</label>
-                        <textarea class="form-control" id="message-text"></textarea>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" ngModel name="name" class="form-control" required>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
-            </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <input type="text" ngModel name="type" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" ngModal="SERVER_DOWN" class="form-control" name="status" required>
+                            <option value="SERVER_UP">SERVER UP</option>
+                            <option value="SERVER_DOWN">SERVER DOWN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">CANCEL</button>
+                    <button type="submit" class="btn btn-success">ADD</button>
+                    <span>Saving...</span>
+                </div>
+            </form>
         </div>
-    </div>
-</div>
+</ng-template>
