@@ -10,7 +10,7 @@ import { ModalComponent } from './modal/modal.component';
 // this is for global importing!! 
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
     ModalComponent
   ],

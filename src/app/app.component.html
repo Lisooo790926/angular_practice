@@ -5,8 +5,7 @@
         <div class="container-fluid">
             <a class="navbar-brand">Manager Server</a>
             <li class="nav-item d-flex">
-                <button class="m-1 btn btn-success" type="button" (click)="open(createModal)" data-bs-toggle="modal"
-                    data-bs-target="#createModal">CREATE</button>
+                <app-modal (serverEvent)="saveServer($event)"></app-modal>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.ALL)">ALL</button>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.SERVER_UP)">SERVER UP</button>
                 <button class="m-1 btn btn-primary" type="button" (click)="filter(Status.SERVER_DOWN)">SERVER DOWN</button>
@@ -71,42 +70,3 @@
         </ng-container>
     </ng-container>
 </div>
-
-<ng-template #createModal let-modal>
-        <div class="modal-content">
-            <form #serverForm="ngForm" (ngSubmit)="saveServer(serverForm)">
-                <div class="modal-header">
-                    <H4 class="modal-title"> Add Server</H4>
-                    <button type="button" class="close">Close</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>IP</label>
-                        <input type="text" ngModel name="ipAddress" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" ngModel name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <input type="text" ngModel name="type" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" ngModal="SERVER_DOWN" class="form-control" name="status" required>
-                            <option value="SERVER_UP">SERVER UP</option>
-                            <option value="SERVER_DOWN">SERVER DOWN</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">CANCEL</button>
-                    <button type="submit" class="btn btn-success">ADD</button>
-                    <span>Saving...</span>
-                </div>
-            </form>
-        </div>
-</ng-template>
-
-<app-modal></app-modal>

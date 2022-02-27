@@ -32,7 +32,6 @@ export class AppComponent implements OnInit {
 
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
-  closeResult: string;
 
   // find serverService and inject it
   constructor(private serverService: ServerService, private modalService: NgbModal) { }
@@ -91,9 +90,10 @@ export class AppComponent implements OnInit {
       )
   }
 
-  saveServer(serverForm: NgForm): void {
+  saveServer($event): void {
+    console.log($event as Server);
     this.isLoading.next(true);
-    this.appState$ = this.serverService.save$(serverForm.value as Server)
+    this.appState$ = this.serverService.save$($event as Server)
       .pipe(
         map(response => {
           this.dataSubject.next(
@@ -102,7 +102,6 @@ export class AppComponent implements OnInit {
           // close the modal
           document.getElementById('closeModal').click();
           // give next time init data
-          serverForm.resetForm({ status: this.Status.SERVER_DOWN })
           this.isLoading.next(false);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
@@ -113,25 +112,5 @@ export class AppComponent implements OnInit {
         })
       )
   }
-
-  open(content:any) {
-    console.log(content);
-    this.modalService.open(content).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    }).then(result => console.log(this.closeResult));
-  }
-
-  getDismissReason(reason: any) {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
-  }
-
 
 }

@@ -1,27 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-@Component({
-    template: `
-    <div class="modal-header">
-      <h4 class="modal-title">Hi there!</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>Hello, {{name}}!</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-    </div>
-  `
-})
-export class NgbdModalContent {
-    @Input() name;
-
-    constructor(public activeModal: NgbActiveModal) { }
-}
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Status } from '../enum/status.emun';
+import { Server } from '../interface/server';
 
 @Component({
     selector: 'app-modal',
@@ -29,10 +10,35 @@ export class NgbdModalContent {
 })
 export class ModalComponent  {
     
+    @Output() serverEvent = new EventEmitter<Server>();
+
+    readonly Status = Status;
+
+    closeResult: string;
     constructor(private modalService: NgbModal) { }
 
-    open() {
-        const modalRef = this.modalService.open("123");
-        modalRef.componentInstance.name = 'World';
+    open(content:any) {
+      console.log(content);
+      this.modalService.open(content).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }).then(result => console.log(this.closeResult));
+    }
+  
+    getDismissReason(reason: any) {
+      if (reason === ModalDismissReasons.ESC) {
+        return 'by pressing ESC';
+      } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+        return 'by clicking on a backdrop';
+      } else {
+        return  `with: ${reason}`;
+      }
+    }
+
+    updateServer(serverForm: NgForm) {
+      console.log(serverForm.value.status);
+      this.serverEvent.emit(serverForm.value as Server);
+      serverForm.resetForm({ status: this.Status.SERVER_DOWN });
     }
 }

@@ -1,7 +1,43 @@
-<p>You can pass an existing component as content of the modal window. In this case, if you're still using Angular 8 or
-    older, remember to add the content component
-    in the <code>entryComponents</code> section of your <code>NgModule</code>. For Angular 9 or newer, it's not needed
-    anymore.
-</p>
+<button class="m-1 btn btn-success" type="button" (click)="open(createModal)" data-bs-toggle="modal"
+data-bs-target="#createModal">CREATE</button>
 
-<button class="btn btn-lg btn-outline-primary" (click)="open()">Launch demo modal</button>
+<ng-template #createModal let-modal>
+    <div class="modal-content">
+        <form #serverForm="ngForm" (ngSubmit)="updateServer(serverForm)">
+            <div class="modal-header">
+                <h4 class="modal-title"> Add Server</h4>
+                <button type="button" class="close">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>IP</label>
+                    <input type="text" ngModel name="ipAddress" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" ngModel name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" ngModel name="type" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Memory</label>
+                    <input type="text" ngModel name="memory" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select ngModal="Status.SERVER_DOWN" class="form-control" name="status" required>
+                        <option [value]="Status.SERVER_UP">SERVER UP</option>
+                        <option [value]="Status.SERVER_DOWN">SERVER DOWN</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal" (click)="modal.dismiss()">CANCEL</button>
+                <button type="submit" class="btn btn-success">ADD</button>
+                <span>Saving...</span>
+            </div>
+        </form>
+    </div>
+</ng-template>
