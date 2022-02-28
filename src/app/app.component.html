@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <a class="navbar-brand">Manager Server</a>
             <li class="nav-item d-flex">
-                <app-modal (serverEvent)="saveServer($event)"></app-modal>
+                <app-modal (serverEvent)="saveServer($event.server, $event.isLoading)"></app-modal>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.ALL)">ALL</button>
                 <button class="m-1 btn btn-success" type="button" (click)="filter(Status.SERVER_UP)">SERVER UP</button>
                 <button class="m-1 btn btn-primary" type="button" (click)="filter(Status.SERVER_DOWN)">SERVER DOWN</button>

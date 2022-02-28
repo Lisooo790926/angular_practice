@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Form, NgForm } from '@angular/forms';
 import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviorSubject } from 'rxjs';
 import { Status, StatusStringMapping } from '../enum/status.emun';
 import { Server } from '../interface/server';
 
@@ -10,14 +11,17 @@ import { Server } from '../interface/server';
 })
 export class ModalComponent  {
     
-    @Output() serverEvent = new EventEmitter<Server>();
+    @Output() serverEvent = new EventEmitter<{server:Server, isLoading:BehaviorSubject<boolean>}>();
 
     readonly Status = Status;
     readonly StatusStringMapping = StatusStringMapping;
 
-    public statuses = Object.values(Status).filter(s=>s!=='ALL');
+    statuses:Status[] = Object.values(Status).filter(s=>s!=='ALL');
 
-    closeResult: string;
+    private closeResult: string;
+    private loading = new BehaviorSubject<boolean>(false);
+    loading$ = this.loading.asObservable();
+
     constructor(private modalService: NgbModal) { }
 
     open(content:any) {
@@ -40,7 +44,8 @@ export class ModalComponent  {
     }
 
     updateServer(serverForm: NgForm) {
-      this.serverEvent.emit(serverForm.value as Server);
+      this.loading.next(true);
+      this.serverEvent.emit({server:serverForm.value as Server, isLoading:this.loading});
       serverForm.resetForm({ status: this.Status.SERVER_DOWN });
     }
 }

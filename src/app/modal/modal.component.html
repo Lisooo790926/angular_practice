@@ -34,8 +34,8 @@ data-bs-target="#createModal">CREATE</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal" (click)="modal.dismiss('Cancel')">CANCEL</button>
-                <button type="submit" class="btn btn-success">ADD</button>
-                <span>Saving...</span>
+                <button *ngIf="(loading$ | async) === false" type="submit" class="btn btn-success">ADD</button>
+                <span *ngIf="(loading$ | async) === true">Saving...</span>
             </div>
         </form>
     </div>

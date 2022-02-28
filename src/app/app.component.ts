@@ -29,9 +29,6 @@ export class AppComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CustomResponse>(null);
   filterStatus$ = this.filterSubject.asObservable();
 
-  private isLoading = new BehaviorSubject<boolean>(false);
-  isLoading$ = this.isLoading.asObservable();
-
   // find serverService and inject it
   constructor(private serverService: ServerService, private modalService: NgbModal) { }
 
@@ -89,10 +86,10 @@ export class AppComponent implements OnInit {
       )
   }
 
-  saveServer($event): void {
-    console.log($event as Server);
-    this.isLoading.next(true);
-    this.appState$ = this.serverService.save$($event as Server)
+  saveServer(server:Server, isLoading:BehaviorSubject<boolean>): void {
+    console.log(server, isLoading);
+    isLoading.next(true);
+    this.appState$ = this.serverService.save$(server)
       .pipe(
         map(response => {
           this.dataSubject.next(
@@ -101,12 +98,13 @@ export class AppComponent implements OnInit {
           // close the modal
           document.getElementById('closeModal').click();
           // give next time init data
-          this.isLoading.next(false);
+          isLoading.next(false);
+          console.log(server, isLoading);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          this.isLoading.next(false);
+          isLoading.next(false);
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       )
