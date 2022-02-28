@@ -115,4 +115,24 @@ export class AppComponent implements OnInit {
       )
   }
 
+  deleteServer(serverId:number): void {
+    this.appState$ = this.serverService.delete$(`${serverId}`)
+      .pipe(
+        map(response => {
+
+          if(response.data.deleted) {
+            this.dataSubject.next(
+              {...response, data:{servers:this.dataSubject.value.data.servers.filter(server=> server.id !== serverId)}}
+            )
+          }
+          
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value}
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      )
+  }
+
 }

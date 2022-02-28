@@ -8,6 +8,6 @@ export interface CustomResponse {
     reason: string;
     message: string;
     developerMessage: string;
-    data: {servers?: Server[], server?: Server, error?: string};
+    data: {servers?: Server[], server?: Server, error?: string, deleted? : boolean};
     // add ? is making this as Optional
 }
