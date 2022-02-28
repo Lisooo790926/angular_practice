@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Form, NgForm } from '@angular/forms';
 import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Status } from '../enum/status.emun';
+import { Status, StatusStringMapping } from '../enum/status.emun';
 import { Server } from '../interface/server';
 
 @Component({
@@ -13,6 +13,9 @@ export class ModalComponent  {
     @Output() serverEvent = new EventEmitter<Server>();
 
     readonly Status = Status;
+    readonly StatusStringMapping = StatusStringMapping;
+
+    public statuses = Object.values(Status).filter(s=>s!=='ALL');
 
     closeResult: string;
     constructor(private modalService: NgbModal) { }
@@ -37,7 +40,6 @@ export class ModalComponent  {
     }
 
     updateServer(serverForm: NgForm) {
-      console.log(serverForm.value.status);
       this.serverEvent.emit(serverForm.value as Server);
       serverForm.resetForm({ status: this.Status.SERVER_DOWN });
     }

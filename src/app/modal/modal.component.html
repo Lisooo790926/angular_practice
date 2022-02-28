@@ -6,35 +6,34 @@ data-bs-target="#createModal">CREATE</button>
         <form #serverForm="ngForm" (ngSubmit)="updateServer(serverForm)">
             <div class="modal-header">
                 <h4 class="modal-title"> Add Server</h4>
-                <button type="button" class="close">Close</button>
+                <button type="button" class="close" (click)="modal.dismiss('Cross click')">Close</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label>IP</label>
-                    <input type="text" ngModel name="ipAddress" class="form-control" required>
+                    <input type="text" ngModel="121.121.121.121" name="ipAddress" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" ngModel name="name" class="form-control" required>
+                    <input type="text" ngModel="test" name="name" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Type</label>
-                    <input type="text" ngModel name="type" class="form-control" required>
+                    <input type="text" ngModel="test" name="type" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Memory</label>
-                    <input type="text" ngModel name="memory" class="form-control" required>
+                    <input type="text" ngModel="16 GB" name="memory" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Status</label>
-                    <select ngModal="Status.SERVER_DOWN" class="form-control" name="status" required>
-                        <option [value]="Status.SERVER_UP">SERVER UP</option>
-                        <option [value]="Status.SERVER_DOWN">SERVER DOWN</option>
+                    <select ngModel="SERVER_DOWN" class="form-control" name="status" required>
+                        <option *ngFor="let status of statuses" [value]="status">{{StatusStringMapping[status]}}</option>
                     </select>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal" (click)="modal.dismiss()">CANCEL</button>
+                <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal" (click)="modal.dismiss('Cancel')">CANCEL</button>
                 <button type="submit" class="btn btn-success">ADD</button>
                 <span>Saving...</span>
             </div>
