@@ -13,6 +13,11 @@
         </div>
     </nav>
     <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
+        <ng-container *ngIf="appState.error">
+            <div class="alert alert-danger" role="alert">
+                {{ appState.error }}
+            </div>
+        </ng-container>
         <ng-container *ngSwitchCase="DataState.LOADING_STATE">
             <div class="m-1 d-flex justify-content-center">
                 <div class="spinner-border" role="status">
@@ -62,11 +67,6 @@
                     </td>
                 </tbody>
             </table>
-        </ng-container>
-        <ng-container *ngSwitchCase="DataState.ERROR_STATE">
-            <div class="alert alert-danger" role="alert">
-                {{ appState.error }}
-            </div>
         </ng-container>
     </ng-container>
 </div>
