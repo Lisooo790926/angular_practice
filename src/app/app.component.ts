@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from './enum/data-state.enum';
 import { Status } from './enum/status.emun';
@@ -29,10 +28,6 @@ export class AppComponent implements OnInit {
   private filterSubject = new BehaviorSubject<string>('');
   private dataSubject = new BehaviorSubject<CustomResponse>(null);
   filterStatus$ = this.filterSubject.asObservable();
-
-  private isLoading = new BehaviorSubject<boolean>(false);
-  isLoading$ = this.isLoading.asObservable();
-  closeResult: string;
 
   // find serverService and inject it
   constructor(private serverService: ServerService, private modalService: NgbModal) { }
@@ -91,9 +86,10 @@ export class AppComponent implements OnInit {
       )
   }
 
-  saveServer(serverForm: NgForm): void {
-    this.isLoading.next(true);
-    this.appState$ = this.serverService.save$(serverForm.value as Server)
+  saveServer(server:Server, isLoading:BehaviorSubject<boolean>): void {
+    console.log(server, isLoading);
+    isLoading.next(true);
+    this.appState$ = this.serverService.save$(server)
       .pipe(
         map(response => {
           this.dataSubject.next(
@@ -102,36 +98,16 @@ export class AppComponent implements OnInit {
           // close the modal
           document.getElementById('closeModal').click();
           // give next time init data
-          serverForm.resetForm({ status: this.Status.SERVER_DOWN })
-          this.isLoading.next(false);
+          isLoading.next(false);
+          console.log(server, isLoading);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
-          this.isLoading.next(false);
+          isLoading.next(false);
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       )
   }
-
-  open(content:any) {
-    console.log(content);
-    this.modalService.open(content).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    }).then(result => console.log(this.closeResult));
-  }
-
-  getDismissReason(reason: any) {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
-  }
-
 
 }

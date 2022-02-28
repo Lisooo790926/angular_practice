@@ -37,7 +37,7 @@ export class ServerService {
         )
 
   save$ = (server: Server) => <Observable<CustomResponse>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/server/list`, server)
+    this.http.post<CustomResponse>(`${this.apiUrl}/server/save`, server)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -52,7 +52,7 @@ export class ServerService {
 
   filter$ = (status: Status, response: CustomResponse) => <Observable<CustomResponse>>
     new Observable<CustomResponse>(
-      // callback function
+      // callback function for define subscriber behavior
       subscriber => {
         console.log(response);
         // below is just emit new value who is subscribe this observable
