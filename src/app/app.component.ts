@@ -92,15 +92,20 @@ export class AppComponent implements OnInit {
     this.appState$ = this.serverService.save$(server)
       .pipe(
         map(response => {
-          this.dataSubject.next(
-            {...response, data:{servers : [response.data.server, ...this.dataSubject.value.data.servers]}}
-          );
+          
+          console.log(response);
+
+          if(response.statusCode !== 400) {
+            this.dataSubject.next(
+              {...response, data:{servers : [response.data.server, ...this.dataSubject.value.data.servers]}}
+            );
+          }
+          
           // close the modal
           document.getElementById('closeModal').click();
           // give next time init data
           isLoading.next(false);
-          console.log(server, isLoading);
-          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value, error: response.data.error }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
